@@ -17,7 +17,7 @@ public class koneksi {
             return null;
         }
 
-        String url = "jdbc:mysql://localhost:3306/latihan_pv";
+        String url = "jdbc:mysql://localhost:3306/klinik";
         try {
             koneksi = DriverManager.getConnection(url, "root", "");
             System.out.println("Berhasil koneksi database");

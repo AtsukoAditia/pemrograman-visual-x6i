@@ -16,6 +16,9 @@ import java.awt.event.*;
  */
 public class Menu_Utama extends JFrame implements ActionListener {
 
+    // session user login
+    private String namaLogin;
+
     // ===== Komponen Menu Bar =====
     private JMenuBar menuBar;
 
@@ -48,6 +51,11 @@ public class Menu_Utama extends JFrame implements ActionListener {
     private JLabel lblWelcome;
 
     public Menu_Utama() {
+        this("Admin");
+    }
+
+    public Menu_Utama(String namaLogin) {
+        this.namaLogin = namaLogin;
         initComponents();
     }
 
@@ -130,7 +138,7 @@ public class Menu_Utama extends JFrame implements ActionListener {
         panelKonten = new JPanel(new BorderLayout());
         panelKonten.setBackground(new Color(230, 240, 255));
 
-        lblWelcome = new JLabel("Selamat Datang di Sistem Informasi Klinik",
+        lblWelcome = new JLabel("Selamat Datang di Sistem Informasi Klinik - " + namaLogin,
                 SwingConstants.CENTER);
         lblWelcome.setFont(new Font("Arial", Font.BOLD, 18));
         lblWelcome.setForeground(new Color(30, 80, 150));
@@ -141,7 +149,7 @@ public class Menu_Utama extends JFrame implements ActionListener {
         // ===== Pengaturan JFrame =====
         setTitle("Menu Utama - Sistem Informasi Klinik");
         setSize(800, 550);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
     }
@@ -156,13 +164,9 @@ public class Menu_Utama extends JFrame implements ActionListener {
 
         // === MENU MASTER ===
         if (src == miPasien) {
-            JOptionPane.showMessageDialog(this, "Membuka Form Pasien...",
-                    "Form Pasien", JOptionPane.INFORMATION_MESSAGE);
-            // TODO: new data_pasien().setVisible(true);
+            new Data_Pasien().setVisible(true);
         } else if (src == miDokter) {
-            JOptionPane.showMessageDialog(this, "Membuka Form Dokter...",
-                    "Form Dokter", JOptionPane.INFORMATION_MESSAGE);
-            // TODO: new Data_Dokter().setVisible(true);
+            new Data_Dokter().setVisible(true);
         } else if (src == miObat) {
             JOptionPane.showMessageDialog(this, "Membuka Form Obat...",
                     "Form Obat", JOptionPane.INFORMATION_MESSAGE);
@@ -174,9 +178,7 @@ public class Menu_Utama extends JFrame implements ActionListener {
 
         // === MENU TRANSAKSI ===
         } else if (src == miPemeriksaan) {
-            JOptionPane.showMessageDialog(this, "Membuka Form Pemeriksaan...",
-                    "Pemeriksaan", JOptionPane.INFORMATION_MESSAGE);
-            // TODO: new Form_Pemeriksaan().setVisible(true);
+            new Rekam_Medis().setVisible(true);
         } else if (src == miRawatInap) {
             JOptionPane.showMessageDialog(this, "Membuka Form Rawat Inap...",
                     "Rawat Inap", JOptionPane.INFORMATION_MESSAGE);
@@ -203,11 +205,12 @@ public class Menu_Utama extends JFrame implements ActionListener {
         // === MENU KELUAR ===
         } else if (src == miKeluar) {
             int konfirmasi = JOptionPane.showConfirmDialog(this,
-                    "Apakah Anda yakin ingin keluar?",
-                    "Konfirmasi Keluar",
+                    "Apakah Anda yakin ingin logout?",
+                    "Konfirmasi Logout",
                     JOptionPane.YES_NO_OPTION);
             if (konfirmasi == JOptionPane.YES_OPTION) {
-                System.exit(0);
+                this.dispose();
+                new Login().setVisible(true);
             }
         }
     }

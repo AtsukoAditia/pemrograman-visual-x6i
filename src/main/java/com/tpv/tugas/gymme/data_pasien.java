@@ -44,16 +44,25 @@ public final class Data_Pasien extends javax.swing.JFrame {
         tid.setText("");
         tnama.setText("");
         talm.setText("");
-//        rjkl.setSelected(true);
+        rjkl.clearSelection();
         cgd.setSelectedIndex(0);
         tcari.setText("");
+    }
+    
+    private String getJenisKelamin() {
+        if (jkl.isSelected()) {
+            return "Laki-laki";
+        } else if (jkp.isSelected()) {
+            return "Perempuan";
+        }
+        return "";
     }
     
     protected void datatable() {
         Object[] Baris={"No Identitas", "Nama Pasien", "Jenis Kelamin", "Alamat", "Golongan Darah"};
         tabmode = new DefaultTableModel(null, Baris);
         tabelpasien.setModel(tabmode);
-        String sql = "select * from pasien";
+        String sql = "select * from pasien order by id asc";
         try {
             java.sql.Statement stat = conn.createStatement();
             ResultSet hasil = stat.executeQuery(sql);
@@ -153,7 +162,7 @@ public final class Data_Pasien extends javax.swing.JFrame {
         talm.setRows(5);
         jScrollPane1.setViewportView(talm);
 
-        cgd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cgd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A", "B", "AB", "O" }));
         cgd.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentMoved(java.awt.event.ComponentEvent evt) {
                 cgdComponentMoved(evt);
@@ -164,14 +173,19 @@ public final class Data_Pasien extends javax.swing.JFrame {
         tcari.addActionListener(this::tcariActionPerformed);
 
         btnsave.setText("SAVE");
+        btnsave.addActionListener(this::btnsaveActionPerformed);
 
         btnedit.setText("EDIT");
+        btnedit.addActionListener(this::btneditActionPerformed);
 
         btndel.setText("DELETE");
+        btndel.addActionListener(this::btndelActionPerformed);
 
         btnclear.setText("CLEAR");
+        btnclear.addActionListener(this::btnclearActionPerformed);
 
         btnexit.setText("EXIT");
+        btnexit.addActionListener(this::btnexitActionPerformed);
 
         btncari.setText("CARI");
         btncari.addActionListener(this::btncariActionPerformed);
@@ -187,6 +201,11 @@ public final class Data_Pasien extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabelpasien.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelpasienMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tabelpasien);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -298,8 +317,140 @@ public final class Data_Pasien extends javax.swing.JFrame {
     }//GEN-LAST:event_tcariActionPerformed
 
     private void btncariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncariActionPerformed
-        // TODO add your handling code here:
+        String cari = tcari.getText().trim();
+        Object[] Baris={"No Identitas", "Nama Pasien", "Jenis Kelamin", "Alamat", "Golongan Darah"};
+        tabmode = new DefaultTableModel(null, Baris);
+        tabelpasien.setModel(tabmode);
+
+        String sql = "select * from pasien where id like ? or nama like ? order by id asc";
+        try {
+            PreparedStatement stat = conn.prepareStatement(sql);
+            stat.setString(1, "%" + cari + "%");
+            stat.setString(2, "%" + cari + "%");
+            ResultSet hasil = stat.executeQuery();
+            while(hasil.next()) {
+                String[] data={
+                    hasil.getString("id"),
+                    hasil.getString("nama"),
+                    hasil.getString("jk"),
+                    hasil.getString("alamat"),
+                    hasil.getString("goldar")
+                };
+                tabmode.addRow(data);
+            }
+        } catch (SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pencarian gagal: " + e.getMessage());
+        }
     }//GEN-LAST:event_btncariActionPerformed
+
+    private void btnsaveActionPerformed(java.awt.event.ActionEvent evt) {
+        if (tid.getText().trim().isEmpty() || tnama.getText().trim().isEmpty() || getJenisKelamin().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No Identitas, Nama Pasien, dan Jenis Kelamin wajib diisi");
+            return;
+        }
+
+        String sql = "insert into pasien values (?,?,?,?,?)";
+        try {
+            PreparedStatement stat = conn.prepareStatement(sql);
+            stat.setString(1, tid.getText().trim());
+            stat.setString(2, tnama.getText().trim());
+            stat.setString(3, getJenisKelamin());
+            stat.setString(4, talm.getText().trim());
+            stat.setString(5, cgd.getSelectedItem().toString());
+
+            stat.executeUpdate();
+            javax.swing.JOptionPane.showMessageDialog(null, "Data Berhasil Disimpan");
+            kosong();
+            tid.requestFocus();
+            datatable();
+        } catch (SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Data Gagal Disimpan " + e.getMessage());
+        }
+    }
+
+    private void tabelpasienMouseClicked(java.awt.event.MouseEvent evt) {
+        int bar = tabelpasien.getSelectedRow();
+        if (bar < 0) {
+            return;
+        }
+
+        String a = tabmode.getValueAt(bar, 0).toString();
+        String b = tabmode.getValueAt(bar, 1).toString();
+        String c = tabmode.getValueAt(bar, 2).toString();
+        String d = tabmode.getValueAt(bar, 3).toString();
+        String e = tabmode.getValueAt(bar, 4).toString();
+
+        tid.setText(a);
+        tnama.setText(b);
+
+        if (c.equalsIgnoreCase("Laki-laki") || c.equalsIgnoreCase("Laki Laki")) {
+            jkl.setSelected(true);
+            jkp.setSelected(false);
+        } else {
+            jkl.setSelected(false);
+            jkp.setSelected(true);
+        }
+
+        talm.setText(d);
+        cgd.setSelectedItem(e);
+    }
+
+    private void btneditActionPerformed(java.awt.event.ActionEvent evt) {
+        if (tid.getText().trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih data pasien yang akan diubah");
+            return;
+        }
+
+        try {
+            String sql = "update pasien set nama=?, jk=?, alamat=?, goldar=? where id=?";
+            PreparedStatement stat = conn.prepareStatement(sql);
+            stat.setString(1, tnama.getText().trim());
+            stat.setString(2, getJenisKelamin());
+            stat.setString(3, talm.getText().trim());
+            stat.setString(4, cgd.getSelectedItem().toString());
+            stat.setString(5, tid.getText().trim());
+
+            stat.executeUpdate();
+            javax.swing.JOptionPane.showMessageDialog(null, "Data Berhasil Diubah");
+            kosong();
+            tid.requestFocus();
+            datatable();
+        } catch (SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Data Gagal Diubah " + e.getMessage());
+        }
+    }
+
+    private void btndelActionPerformed(java.awt.event.ActionEvent evt) {
+        if (tid.getText().trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih data pasien yang akan dihapus");
+            return;
+        }
+
+        int ok = javax.swing.JOptionPane.showConfirmDialog(null, "hapus", "Konfirmasi Dialog", javax.swing.JOptionPane.YES_NO_CANCEL_OPTION);
+        if (ok == 0) {
+            String sql = "delete from pasien where id=?";
+            try {
+                PreparedStatement stat = conn.prepareStatement(sql);
+                stat.setString(1, tid.getText().trim());
+                stat.executeUpdate();
+                javax.swing.JOptionPane.showMessageDialog(null, "Data berhasil dihapus");
+                kosong();
+                tid.requestFocus();
+                datatable();
+            } catch (SQLException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Data gagal dihapus " + e.getMessage());
+            }
+        }
+    }
+
+    private void btnexitActionPerformed(java.awt.event.ActionEvent evt) {
+        dispose();
+    }
+
+    private void btnclearActionPerformed(java.awt.event.ActionEvent evt) {
+        kosong();
+        datatable();
+    }
 
     private void cgdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cgdActionPerformed
         // TODO add your handling code here:

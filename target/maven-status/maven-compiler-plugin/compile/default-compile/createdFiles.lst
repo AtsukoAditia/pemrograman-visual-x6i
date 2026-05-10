@@ -1,9 +1,15 @@
 com/tpv/tugas/gymme/Data_Pasien$1.class
-com/tpv/tugas/gymme/Data_Pasien.class
+com/tpv/tugas/gymme/Rekam_Medis$2.class
 com/tpv/tugas/gymme/bg2.class
 com/tpv/tugas/gymme/Menu_Utama.class
 com/tpv/tugas/gymme/Gymme.class
+com/tpv/tugas/gymme/Rekam_Medis$1.class
+com/tpv/tugas/gymme/Data_Pasien$2.class
 com/tpv/tugas/gymme/Rekam_Medis.class
+com/tpv/tugas/gymme/Login.class
+com/tpv/tugas/gymme/Data_Dokter$2.class
+com/tpv/tugas/gymme/Data_Pasien.class
+com/tpv/tugas/gymme/Data_Dokter$1.class
+com/tpv/tugas/gymme/Rekam_Medis$3.class
 com/tpv/tugas/gymme/Data_Dokter.class
 koneksi/koneksi.class
-com/tpv/tugas/gymme/Login.class
