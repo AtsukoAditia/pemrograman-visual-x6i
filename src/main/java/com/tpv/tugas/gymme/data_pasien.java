@@ -11,16 +11,16 @@ import koneksi.koneksi;
  *
  * @author atsukoaditia
  */
-public final class data_pasien extends javax.swing.JFrame {
+public final class Data_Pasien extends javax.swing.JFrame {
     private Connection conn = new koneksi().connect();
     private DefaultTableModel tabmode;
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(data_pasien.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Data_Pasien.class.getName());
 
     /**
      * Creates new form data_pasien
      */
-    public data_pasien() {
+    public Data_Pasien() {
         initComponents();
         conn = new koneksi().connect();
         if (conn == null) {
@@ -331,7 +331,7 @@ public final class data_pasien extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new data_pasien().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new Data_Pasien().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
