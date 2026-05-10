@@ -7,12 +7,14 @@ import java.awt.event.*;
 /**
  * Form Login Sederhana
  * Materi: Pemrograman Visual - Event actionListener
- * 
+ *
  * Komponen:
- * - JLabel     : label Username dan Password
- * - JTextField : input Username (tuser)
+ * - JLabel         : label Username dan Password
+ * - JTextField     : input Username (tuser)
  * - JPasswordField : input Password (tpass)
- * - JButton    : tombol Login (blog) dan Cancel (bcan)
+ * - JButton        : tombol Login (blog) dan Cancel (bcan)
+ *
+ * Setelah login berhasil -> membuka Menu_Utama
  */
 public class Login extends JFrame implements ActionListener {
 
@@ -68,7 +70,7 @@ public class Login extends JFrame implements ActionListener {
         add(panelBtn, gbc);
 
         // Pengaturan JFrame
-        setTitle("Form Login");
+        setTitle("Form Login - Sistem Informasi Klinik");
         setSize(320, 180);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // tampil di tengah layar
@@ -89,14 +91,19 @@ public class Login extends JFrame implements ActionListener {
             // Validasi login sederhana
             if (username.equals("admin") && password.equals("1234")) {
                 JOptionPane.showMessageDialog(this,
-                    "Login Berhasil!",
+                    "Login Berhasil! Selamat Datang, " + username + "!",
                     "Informasi",
                     JOptionPane.INFORMATION_MESSAGE);
-                // TODO: buka form utama setelah login berhasil
+
+                // Tutup form Login dan buka Menu Utama
+                this.dispose();
+                Menu_Utama menuUtama = new Menu_Utama();
+                menuUtama.setVisible(true);
+
             } else {
                 JOptionPane.showMessageDialog(this,
                     "Username atau Password salah!",
-                    "Error",
+                    "Error Login",
                     JOptionPane.ERROR_MESSAGE);
                 tuser.setText("");
                 tpass.setText("");
